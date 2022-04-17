@@ -1,0 +1,36 @@
+{
+  "name": "contracts",
+  "version": "1.0.0",
+  "description": "Contracts for the Lattice starterkit",
+  "main": "./dist/",
+  "scripts": {
+    "prepare": "forge install --root . && yarn build",
+    "start": "hardhat node",
+    "test": "forge test --root .",
+    "build": "hardhat compile; rimraf \"./dist\"; yarn dist:artifacts; yarn typechain:generate",
+    "dist:artifacts": "copyfiles -u 1 \"./artifacts/src/**/*.json\" \"./dist\"; copyfiles -u 1 \"./artifacts/lattice-ecs/**/*.json\" \"./dist\"; rimraf \"./dist/**/*.dbg.json\"",
+    "typechain:generate": "typechain --target ethers-v5 --out-dir ./dist './dist/**/*.json'",
+    "hh-deploy": "hardhat deploy"
+  },
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers",
+    "@typechain/ethers-v5": "^9.0.0",
+    "copyfiles": "^2.4.1",
+    "hardhat": "^2.9.3",
+    "hardhat-deploy": "^0.10.6",
+    "inquirer": "^8.2.0",
+    "inquirer-prompt-suggest": "^0.1.0",
+    "netlify": "^8.0.2",
+    "openurl": "^1.1.1",
+    "prettier": "^2.5.1",
+    "prettier-plugin-solidity": "^1.0.0-beta.19",
+    "rimraf": "^3.0.2",
+    "solhint": "^3.3.7",
+    "ts-node": "^10.7.0",
+    "typechain": "^7.0.0"
+  },
+  "dependencies": {
+    "@latticexyz/persona": "^1.2.0",
+    "colorette": "^2.0.16"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "name": "lattice-starterkit",
+  "version": "1.0.0",
+  "description": "Build your own crypto native game in 1h",
+  "repository": "https://github.com/latticexyz/starterkit.git",
+  "contributors": ["alvrs <alvarius@lattice.xyz>", "andrii <andrii@lattice.xyz>", "ludens <ludens@lattice.xyz>"],
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "client",
+    "contracts"
+  ],
+  "scripts": {
+    "prepare": "git submodule update --init --recursive && yarn workspaces run prepare",
+    "start": "run-pty % yarn start:client % yarn start:contracts",
+    "start:client": "yarn workspace client run start",
+    "start:contracts": "yarn workspace contracts run start",
+    "// Deployment": "",
+    "deploy": "clear && ts-node --transpile-only cli/deploy.ts"
+  },
+  "dependencies": {
+    "run-pty": "^3.0.0"
+  }
+}

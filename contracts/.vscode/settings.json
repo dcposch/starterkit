@@ -1,0 +1,11 @@
+{
+    "editor.formatOnSave": true,
+    "solidity.formatter": "prettier",
+    "solidity.compileUsingRemoteVersion": "v0.8.13+commit.abaa5c0e",
+    "[solidity]": {
+        "editor.defaultFormatter": "JuanBlanco.solidity"
+    },
+    "solidity.packageDefaultDependenciesContractsDirectory": "src",
+    "solidity.packageDefaultDependenciesDirectory": "lib",
+    "solidity.defaultCompiler": "remote",
+}
