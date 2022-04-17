@@ -1,0 +1,5 @@
+{
+  "name": "@latticexyz/phaser-middleware",
+  "version": "0.0.1",
+  "main": "./index.ts"
+}
