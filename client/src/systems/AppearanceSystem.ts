@@ -5,7 +5,7 @@ export function createAppearanceSystem(context: Context) {
   const {
     world,
     components: { Appearance, Texture },
-    phaser: { objectPool },
+    phaser: { objectPool, scene },
   } = context;
 
   const appearances = defineUpdateQuery(world, [Has(Appearance)]);
@@ -20,7 +20,11 @@ export function createAppearanceSystem(context: Context) {
       }
 
       const object = objectPool.get(entity);
-      if (hasComponent(Texture, appearance.value)) object.setTexture(String(appearance.value));
+      if (hasComponent(Texture, appearance.value)) {
+        object.setTexture(String(appearance.value));
+        const animKey = "anim" + String(appearance.value);
+        if (scene.anims.get(animKey)) object.anims.play(animKey);
+      }
     }
   });
 }

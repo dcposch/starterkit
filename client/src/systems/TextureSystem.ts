@@ -29,11 +29,25 @@ export function createTextureSystem(context: Context) {
         loader.spritesheet(String(textureEntity), texture.value, { frameWidth: 16, frameHeight: 16 })
       );
 
+      // Create an animation from the spritesheet
+      const frames = scene.anims.generateFrameNumbers(String(textureEntity), { start: 0 });
+      const animKey = "anim" + String(textureEntity);
+      if (frames.length > 1) {
+        scene.anims.create({
+          key: animKey,
+          frames,
+          repeat: -1,
+          frameRate: 5,
+        });
+      }
+
       // Update entities with this texture
       const entities = defineQuery([HasValue(Appearance, { value: textureEntity })]).get();
       for (const entity of entities) {
-        // Since we used the entity id as key when loading, we can refer to it when setting the phaser texture
-        objectPool.get(entity).setTexture(String(textureEntity));
+        // Since we used the entity id as key when loading, we can refer to it when setting the phaser texture and play the animation
+        const object = objectPool.get(entity);
+        object.setTexture(String(textureEntity));
+        if (scene.anims.get(animKey)) object.anims.play(animKey);
       }
     }
   });
