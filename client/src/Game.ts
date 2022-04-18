@@ -50,6 +50,7 @@ export async function createGame(contractAddress: string, privateKey: string, ch
   const Heart = createBoolComponent(world, "Heart");
   const Attack = createUintComponent(world, "Attack");
   const Life = createTupleComponent(world, "Life");
+  const Selected = createBoolComponent(world, "Selected");
 
   const components = {
     Position,
@@ -62,6 +63,7 @@ export async function createGame(contractAddress: string, privateKey: string, ch
     Heart,
     Attack,
     Life,
+    Selected,
   };
 
   /*****************************************

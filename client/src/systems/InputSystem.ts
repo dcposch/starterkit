@@ -1,11 +1,14 @@
 import { Context } from "../types";
 import { map, filter } from "rxjs";
 import { pixelToWorldCoord } from "@latticexyz/phaser-middleware";
+import { exists, Has, HasValue, removeComponent, setComponent } from "@latticexyz/mobx-ecs";
 
 export function createInputSystem(context: Context) {
   const {
+    components: { OwnedBy, Selected, Position },
     phaser: { input, map: tilemap },
     api: { spawn },
+    signer,
   } = context;
 
   input.click$
@@ -15,7 +18,23 @@ export function createInputSystem(context: Context) {
       filter((coord) => coord.x >= 0 && coord.y >= 0 && coord.x < tilemap.width && coord.y < tilemap.height) // Filter clicks outside the map
     )
     .subscribe((coord) => {
-      console.log("Spawn at", coord);
-      spawn(coord);
+      if (exists([HasValue(OwnedBy, { value: signer.address })]) == undefined) {
+        // If not spawned, spawn
+        console.log("Spawning at", coord);
+        spawn(coord);
+      } else {
+        // Else, select the entity below the cursor
+
+        // Remove the Selected component from the currently selected entity
+        const selectedEntity = exists([Has(Selected)]);
+        if (selectedEntity != undefined) removeComponent(Selected, selectedEntity);
+
+        // Add the Selected component to the entity below the cursor
+        const entityAtPos = exists([HasValue(Position, coord), HasValue(OwnedBy, { value: signer.address })]);
+        if (entityAtPos) {
+          console.log("Selected entity", entityAtPos, "at", coord);
+          setComponent(Selected, entityAtPos, {});
+        }
+      }
     });
 }
