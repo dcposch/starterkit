@@ -2,7 +2,7 @@ export const componentConfig = {
   position: 'CoordComponent',
   texture: 'StringComponent',
   appearance: 'UintComponent',
-  ownedBy: 'AddressComponent',
+  ownedBy: 'UintComponent',
   movable: 'BoolComponent',
   miner: 'BoolComponent',
   mined: 'BoolComponent',

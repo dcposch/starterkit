@@ -10,13 +10,11 @@ import {
 import { createMapping, loadEvents, setupContracts, setupMappings } from "../packages/lattice-eth-middleware";
 import { setupPhaser } from "@latticexyz/phaser-middleware";
 import {
-  createAddressComponent,
   createBoolComponent,
   createCoordComponent,
   createStringComponent,
   createTupleComponent,
   createUintComponent,
-  decodeAddressComponent,
   decodeBoolComponent,
   decodeCoordComponent,
   decodeStringComponent,
@@ -56,7 +54,7 @@ export async function createGame(contractAddress: string, privateKey: string, ch
   const Position = createCoordComponent(world, "Position");
   const Texture = createStringComponent(world, "Texture");
   const Appearance = createUintComponent(world, "Appearance");
-  const OwnedBy = createAddressComponent(world, "OwnedBy");
+  const OwnedBy = createUintComponent(world, "OwnedBy");
   const Movable = createBoolComponent(world, "Movable");
   const Miner = createBoolComponent(world, "Miner");
   const Mined = createBoolComponent(world, "Mined");
@@ -88,7 +86,7 @@ export async function createGame(contractAddress: string, privateKey: string, ch
     ...createMapping(componentAddresses.position, Position, decodeCoordComponent),
     ...createMapping(componentAddresses.texture, Texture, decodeStringComponent),
     ...createMapping(componentAddresses.appearance, Appearance, decodeUintComponent),
-    ...createMapping(componentAddresses.ownedBy, OwnedBy, decodeAddressComponent),
+    ...createMapping(componentAddresses.ownedBy, OwnedBy, decodeUintComponent),
     ...createMapping(componentAddresses.movable, Movable, decodeBoolComponent),
     ...createMapping(componentAddresses.miner, Miner, decodeBoolComponent),
     ...createMapping(componentAddresses.mined, Mined, decodeBoolComponent),

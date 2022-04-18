@@ -8,16 +8,16 @@ import { QueryFragment, QueryType, LibQuery } from 'lattice-ecs/LibQuery.sol';
 import { CoordComponent, Coord } from './components/CoordComponent.sol';
 import { UintComponent } from './components/UintComponent.sol';
 import { StringComponent } from './components/StringComponent.sol';
-import { AddressComponent } from './components/AddressComponent.sol';
 import { BoolComponent } from './components/BoolComponent.sol';
 import { TupleComponent } from './components/TupleComponent.sol';
 import { manhattan } from './utils.sol';
+import { PersonaMirror } from 'persona/L2/PersonaMirror.sol';
 
 struct Components {
   CoordComponent position;
   StringComponent texture;
   UintComponent appearance;
-  AddressComponent ownedBy;
+  UintComponent ownedBy;
   BoolComponent movable;
   BoolComponent miner;
   BoolComponent mined;
@@ -33,6 +33,7 @@ enum Texture {
 }
 
 contract Game {
+  PersonaMirror public personaMirror;
   address public world;
   address public owner;
   uint256 public width = 32;
@@ -45,7 +46,7 @@ contract Game {
     _;
   }
   modifier onlyEntityOwner(uint256 entity) {
-    require(c.ownedBy.getValue(entity) == msg.sender, 'invalid owner');
+    require(c.ownedBy.getValue(entity) == getPersona(), 'invalid owner');
     _;
   }
 
@@ -59,9 +60,10 @@ contract Game {
     _;
   }
 
-  constructor(address _world) {
+  constructor(address _world, address _personaMirror) {
     owner = msg.sender;
     world = _world;
+    personaMirror = PersonaMirror(_personaMirror);
   }
 
   function registerComponents(Components memory _components, address[] memory _componentList) public onlyContractOwner {
@@ -80,6 +82,12 @@ contract Game {
     c.texture.set(uint256(Texture.Creature), creature);
     c.texture.set(uint256(Texture.Heart), heart);
     c.texture.set(uint256(Texture.Ground), ground);
+  }
+
+  function getPersona() internal view returns (uint256) {
+    uint256 personaId = personaMirror.getActivePersona(msg.sender, address(this));
+    require(personaMirror.isAuthorized(personaId, msg.sender, address(this), msg.sig), 'persona not authorized');
+    return personaId;
   }
 
   /**
@@ -125,11 +133,11 @@ contract Game {
 
   function spawn(Coord memory center) public inBounds(center) {
     // Check player is not spawned yet
-    require(c.ownedBy.getEntitiesWithValue(msg.sender).length == 0, 'already spawned');
+    require(c.ownedBy.getEntitiesWithValue(getPersona()).length == 0, 'already spawned');
 
     // Create player entity (to indicate spawn)
     uint256 playerEntity = World(world).getNumEntities();
-    c.ownedBy.set(playerEntity, msg.sender);
+    c.ownedBy.set(playerEntity, getPersona());
 
     // Check spawn area is empty, then mine
     for (uint256 dx; dx < 3; dx++) {
@@ -141,7 +149,7 @@ contract Game {
         // Spawn entities
         uint256 entity = World(world).getNumEntities();
         c.position.set(entity, coord);
-        c.ownedBy.set(entity, msg.sender);
+        c.ownedBy.set(entity, getPersona());
 
         // Put heart at the center
         if (dx == 1 && dy == 1) {
