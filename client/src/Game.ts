@@ -18,6 +18,7 @@ import {
 import { createPositionSystem } from "./systems/PositionSystem";
 import { createTextureSystem } from "./systems/TextureSystem";
 import { createAppearanceSystem } from "./systems/AppearanceSystem";
+import { Coord } from "./types";
 
 export async function createGame(contractAddress: string, privateKey: string, chainId: number, personaId: number) {
   const world = createWorld();
@@ -82,8 +83,8 @@ export async function createGame(contractAddress: string, privateKey: string, ch
   /*****************************************
    * Methods and context for consumers
    *****************************************/
-  function ping() {
-    return "pong";
+  function spawn(coord: Coord) {
+    txExecutor.sendTx((c) => c.spawn(coord));
   }
 
   const context = {
@@ -94,7 +95,7 @@ export async function createGame(contractAddress: string, privateKey: string, ch
     signer,
     txExecutor,
     personaId,
-    api: { ping },
+    api: { spawn },
   };
 
   /*****************************************
