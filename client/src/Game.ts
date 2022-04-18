@@ -1,4 +1,4 @@
-import { createWorld, Entity } from "@latticexyz/mobx-ecs";
+import { createWorld, Entity, exists, getComponentValue, Has } from "@latticexyz/mobx-ecs";
 import { createMapping, loadEvents, setupContracts, setupMappings } from "../packages/lattice-eth-middleware";
 import { setupPhaser } from "@latticexyz/phaser-middleware";
 import {
@@ -20,6 +20,7 @@ import { createTextureSystem } from "./systems/TextureSystem";
 import { createAppearanceSystem } from "./systems/AppearanceSystem";
 import { Coord } from "./types";
 import { createInputSystem } from "./systems/InputSystem";
+import { Directions } from "./constants";
 
 export async function createGame(contractAddress: string, privateKey: string, chainId: number, personaId: number) {
   const world = createWorld();
@@ -93,6 +94,26 @@ export async function createGame(contractAddress: string, privateKey: string, ch
   async function action(entity: Entity, target: Coord) {
     await txExecutor.sendTx((contract) => contract.action(entity, target));
   }
+  function actionDirection(direction: keyof typeof Directions) {
+    // Get the currently selected entity
+    const selected = exists([Has(Selected)]);
+    if (selected == undefined) {
+      console.warn("No entity selected");
+      return;
+    }
+
+    // Get the currently selected entity's position
+    const currentPosition = getComponentValue(Position, selected);
+    if (!currentPosition) {
+      console.warn("Entity has no position");
+      return;
+    }
+
+    // Execute an action at the coord in the given direction
+    const delta = Directions[direction];
+    const newPosition = { x: currentPosition.x + delta.x, y: currentPosition.y + delta.y };
+    action(selected, newPosition);
+  }
 
   const context = {
     world,
@@ -102,7 +123,7 @@ export async function createGame(contractAddress: string, privateKey: string, ch
     signer,
     txExecutor,
     personaId,
-    api: { spawn, action },
+    api: { spawn, action, actionDirection },
   };
 
   /*****************************************
