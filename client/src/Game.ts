@@ -2,11 +2,17 @@ import { createWorld } from "@latticexyz/mobx-ecs";
 import { createMapping, loadEvents, setupContracts, setupMappings } from "../packages/lattice-eth-middleware";
 import { setupPhaser } from "@latticexyz/phaser-middleware";
 import {
+  createAddressComponent,
+  createBoolComponent,
   createCoordComponent,
   createStringComponent,
+  createTupleComponent,
   createUintComponent,
+  decodeAddressComponent,
+  decodeBoolComponent,
   decodeCoordComponent,
   decodeStringComponent,
+  decodeTupleComponent,
   decodeUintComponent,
 } from "./components";
 import { createPositionSystem } from "./systems/PositionSystem";
@@ -35,11 +41,25 @@ export async function createGame(contractAddress: string, privateKey: string, ch
   const Position = createCoordComponent(world, "Position");
   const Texture = createStringComponent(world, "Texture");
   const Appearance = createUintComponent(world, "Appearance");
+  const OwnedBy = createAddressComponent(world, "OwnedBy");
+  const Movable = createBoolComponent(world, "Movable");
+  const Miner = createBoolComponent(world, "Miner");
+  const Mined = createBoolComponent(world, "Mined");
+  const Heart = createBoolComponent(world, "Heart");
+  const Attack = createUintComponent(world, "Attack");
+  const Life = createTupleComponent(world, "Life");
 
   const components = {
     Position,
     Texture,
     Appearance,
+    OwnedBy,
+    Movable,
+    Miner,
+    Mined,
+    Heart,
+    Attack,
+    Life,
   };
 
   /*****************************************
@@ -49,6 +69,13 @@ export async function createGame(contractAddress: string, privateKey: string, ch
     ...createMapping(componentAddresses.position, Position, decodeCoordComponent),
     ...createMapping(componentAddresses.texture, Texture, decodeStringComponent),
     ...createMapping(componentAddresses.appearance, Appearance, decodeUintComponent),
+    ...createMapping(componentAddresses.ownedBy, OwnedBy, decodeAddressComponent),
+    ...createMapping(componentAddresses.movable, Movable, decodeBoolComponent),
+    ...createMapping(componentAddresses.miner, Miner, decodeBoolComponent),
+    ...createMapping(componentAddresses.mined, Mined, decodeBoolComponent),
+    ...createMapping(componentAddresses.heart, Heart, decodeBoolComponent),
+    ...createMapping(componentAddresses.attack, Attack, decodeUintComponent),
+    ...createMapping(componentAddresses.life, Life, decodeTupleComponent),
   });
   await loadEvents(provider, contracts.World);
 
