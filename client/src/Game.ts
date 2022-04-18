@@ -10,6 +10,8 @@ import {
   decodeUintComponent,
 } from "./components";
 import { createPositionSystem } from "./systems/PositionSystem";
+import { createTextureSystem } from "./systems/TextureSystem";
+import { createAppearanceSystem } from "./systems/AppearanceSystem";
 
 export async function createGame(contractAddress: string, privateKey: string, chainId: number, personaId: number) {
   const world = createWorld();
@@ -72,6 +74,8 @@ export async function createGame(contractAddress: string, privateKey: string, ch
    * Systems
    *****************************************/
   createPositionSystem(context);
+  createTextureSystem(context);
+  createAppearanceSystem(context);
 
   return context;
 }
