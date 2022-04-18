@@ -19,6 +19,7 @@ import { createPositionSystem } from "./systems/PositionSystem";
 import { createTextureSystem } from "./systems/TextureSystem";
 import { createAppearanceSystem } from "./systems/AppearanceSystem";
 import { Coord } from "./types";
+import { createInputSystem } from "./systems/InputSystem";
 
 export async function createGame(contractAddress: string, privateKey: string, chainId: number, personaId: number) {
   const world = createWorld();
@@ -104,6 +105,7 @@ export async function createGame(contractAddress: string, privateKey: string, ch
   createPositionSystem(context);
   createTextureSystem(context);
   createAppearanceSystem(context);
+  createInputSystem(context);
 
   return context;
 }
