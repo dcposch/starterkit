@@ -1,4 +1,5 @@
 export const componentConfig = {
   position: 'CoordComponent',
-  num: 'UintComponent',
+  texture: 'StringComponent',
+  appearance: 'UintComponent',
 };

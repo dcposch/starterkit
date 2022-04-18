@@ -1,7 +1,14 @@
 import { createWorld } from "@latticexyz/mobx-ecs";
 import { createMapping, loadEvents, setupContracts, setupMappings } from "../packages/lattice-eth-middleware";
 import { setupPhaser } from "@latticexyz/phaser-middleware";
-import { createCoordComponent, decodeCoordComponent } from "./components";
+import {
+  createCoordComponent,
+  createStringComponent,
+  createUintComponent,
+  decodeCoordComponent,
+  decodeStringComponent,
+  decodeUintComponent,
+} from "./components";
 import { createPositionSystem } from "./systems/PositionSystem";
 
 export async function createGame(contractAddress: string, privateKey: string, chainId: number, personaId: number) {
@@ -24,9 +31,13 @@ export async function createGame(contractAddress: string, privateKey: string, ch
    * Component definitions
    *****************************************/
   const Position = createCoordComponent(world, "Position");
+  const Texture = createStringComponent(world, "Texture");
+  const Appearance = createUintComponent(world, "Appearance");
 
   const components = {
     Position,
+    Texture,
+    Appearance,
   };
 
   /*****************************************
@@ -34,6 +45,8 @@ export async function createGame(contractAddress: string, privateKey: string, ch
    *****************************************/
   setupMappings(world, contracts.World, {
     ...createMapping(componentAddresses.position, Position, decodeCoordComponent),
+    ...createMapping(componentAddresses.texture, Texture, decodeStringComponent),
+    ...createMapping(componentAddresses.appearance, Appearance, decodeUintComponent),
   });
   await loadEvents(provider, contracts.World);
 
