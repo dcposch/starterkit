@@ -54,6 +54,11 @@ contract Game {
     _;
   }
 
+  modifier inBounds(Coord memory coord) {
+    require(coord.x < width && coord.y < height, 'out of bounds');
+    _;
+  }
+
   constructor(address _world) {
     owner = msg.sender;
     world = _world;
@@ -118,7 +123,7 @@ contract Game {
     }
   }
 
-  function spawn(Coord memory center) public {
+  function spawn(Coord memory center) public inBounds(center) {
     // Check player is not spawned yet
     require(c.ownedBy.getEntitiesWithValue(msg.sender).length == 0, 'already spawned');
 
@@ -161,7 +166,12 @@ contract Game {
     }
   }
 
-  function action(uint256 entity, Coord memory target) public onlyEntityOwner(entity) onlyAdjacent(entity, target) {
+  function action(uint256 entity, Coord memory target)
+    public
+    onlyEntityOwner(entity)
+    onlyAdjacent(entity, target)
+    inBounds(target)
+  {
     // Check for mined tiles at the target coord
     (uint256 targetEntity, bool foundTargetEntity) = getEntityWithAt(c.mined, target);
 
