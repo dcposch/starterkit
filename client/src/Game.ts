@@ -2,7 +2,7 @@ import { createWorld } from "@latticexyz/mobx-ecs";
 import { createMapping, loadEvents, setupContracts, setupMappings } from "../packages/lattice-eth-middleware";
 import { setupPhaser } from "@latticexyz/phaser-middleware";
 import { createCoordComponent, decodeCoordComponent } from "./components";
-import { createExampleSystem } from "./systems/ExampleSystem";
+import { createPositionSystem } from "./systems/PositionSystem";
 
 export async function createGame(contractAddress: string, privateKey: string, chainId: number, personaId: number) {
   const world = createWorld();
@@ -58,7 +58,7 @@ export async function createGame(contractAddress: string, privateKey: string, ch
   /*****************************************
    * Systems
    *****************************************/
-  createExampleSystem(context);
+  createPositionSystem(context);
 
   return context;
 }

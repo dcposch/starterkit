@@ -33,6 +33,7 @@ contract Game {
   function registerComponents(Components memory _components, address[] memory _componentList) public onlyContractOwner {
     c = _components;
     componentList = _componentList;
+    c.position.set(0, Coord(0, 0));
   }
 
   /**
