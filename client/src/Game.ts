@@ -31,6 +31,7 @@ import { createInputSystem } from "./systems/InputSystem";
 import { Directions } from "./constants";
 import { createLifeSystem } from "./systems/LifeSystem";
 import { createParticleSystem } from "./systems/ParticleSystem";
+import { createOwnedBySystem } from "./systems/OwnedBySystem";
 
 export async function createGame(contractAddress: string, privateKey: string, chainId: number, personaId: number) {
   const world = createWorld();
@@ -161,6 +162,7 @@ export async function createGame(contractAddress: string, privateKey: string, ch
   createInputSystem(context);
   createLifeSystem(context);
   createParticleSystem(context);
+  createOwnedBySystem(context);
 
   return context;
 }
