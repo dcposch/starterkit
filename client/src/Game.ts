@@ -1,4 +1,12 @@
-import { createWorld, Entity, exists, getComponentValue, Has } from "@latticexyz/mobx-ecs";
+import {
+  createWorld,
+  Entity,
+  exists,
+  getComponentValue,
+  Has,
+  removeComponent,
+  setComponent,
+} from "@latticexyz/mobx-ecs";
 import { createMapping, loadEvents, setupContracts, setupMappings } from "../packages/lattice-eth-middleware";
 import { setupPhaser } from "@latticexyz/phaser-middleware";
 import {
@@ -22,6 +30,7 @@ import { Coord } from "./types";
 import { createInputSystem } from "./systems/InputSystem";
 import { Directions } from "./constants";
 import { createLifeSystem } from "./systems/LifeSystem";
+import { createParticleSystem } from "./systems/ParticleSystem";
 
 export async function createGame(contractAddress: string, privateKey: string, chainId: number, personaId: number) {
   const world = createWorld();
@@ -53,6 +62,7 @@ export async function createGame(contractAddress: string, privateKey: string, ch
   const Attack = createUintComponent(world, "Attack");
   const Life = createTupleComponent(world, "Life");
   const Selected = createBoolComponent(world, "Selected");
+  const PendingAction = createCoordComponent(world, "PendingAction");
 
   const components = {
     Position,
@@ -66,6 +76,7 @@ export async function createGame(contractAddress: string, privateKey: string, ch
     Attack,
     Life,
     Selected,
+    PendingAction,
   };
 
   /*****************************************
@@ -93,7 +104,21 @@ export async function createGame(contractAddress: string, privateKey: string, ch
   }
 
   async function action(entity: Entity, target: Coord) {
+    // Don't act if an action is pending
+    const pendingAction = exists([Has(PendingAction)]);
+    if (pendingAction != undefined) {
+      console.warn("Action in progress");
+      return;
+    }
+
+    // Add an action indicator
+    setComponent(PendingAction, entity, target);
+
+    // Execute the action
     await txExecutor.sendTx((contract) => contract.action(entity, target));
+
+    // Remove the action indicator
+    removeComponent(PendingAction, entity);
   }
   function actionDirection(direction: keyof typeof Directions) {
     // Get the currently selected entity
@@ -135,6 +160,7 @@ export async function createGame(contractAddress: string, privateKey: string, ch
   createAppearanceSystem(context);
   createInputSystem(context);
   createLifeSystem(context);
+  createParticleSystem(context);
 
   return context;
 }
