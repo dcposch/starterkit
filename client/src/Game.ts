@@ -21,6 +21,7 @@ import { createAppearanceSystem } from "./systems/AppearanceSystem";
 import { Coord } from "./types";
 import { createInputSystem } from "./systems/InputSystem";
 import { Directions } from "./constants";
+import { createLifeSystem } from "./systems/LifeSystem";
 
 export async function createGame(contractAddress: string, privateKey: string, chainId: number, personaId: number) {
   const world = createWorld();
@@ -133,6 +134,7 @@ export async function createGame(contractAddress: string, privateKey: string, ch
   createTextureSystem(context);
   createAppearanceSystem(context);
   createInputSystem(context);
+  createLifeSystem(context);
 
   return context;
 }
