@@ -33,7 +33,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     from: deployer,
     log: true,
     autoMine: true,
-    args: [world.address], // Add personaMirrorAddress here when integrating persona
+    args: [world.address, personaMirrorAddress],
   });
 
   const gameContract = await hre.ethers.getContract('Game', deployer);

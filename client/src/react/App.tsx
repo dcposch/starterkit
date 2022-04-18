@@ -14,17 +14,14 @@ export const App: React.FC<{ context: Context }> = observer(({ context }) => {
       world,
       components: { OwnedBy, Heart },
     } = context;
-    const lostEntityQuery = defineExitQuery(world, [HasValue(OwnedBy, { value: context.signer.address })]);
-    const ownedByQuery = defineQuery([HasValue(OwnedBy, { value: context.signer.address })]);
+    const lostEntityQuery = defineExitQuery(world, [HasValue(OwnedBy, { value: context.personaId })]);
+    const ownedByQuery = defineQuery([HasValue(OwnedBy, { value: context.personaId })]);
     return reaction(
       () => lostEntityQuery.get(),
       (lostEntities) => {
         if (lostEntities.size == 0) return;
         // If the player doesn't own a heart anymore, the game is lost
-        if (
-          ownedByQuery.get().size > 0 &&
-          !exists([Has(Heart), HasValue(OwnedBy, { value: context.signer.address })])
-        ) {
+        if (ownedByQuery.get().size > 0 && !exists([Has(Heart), HasValue(OwnedBy, { value: context.personaId })])) {
           setModalText("Game over");
         } else {
           // Flash a quick modal if the player lost an entity

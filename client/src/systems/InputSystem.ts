@@ -8,7 +8,7 @@ export function createInputSystem(context: Context) {
     components: { OwnedBy, Selected, Position },
     phaser: { input, map: tilemap },
     api: { spawn, actionDirection },
-    signer,
+    personaId,
   } = context;
 
   input.onKeyPress(
@@ -38,7 +38,7 @@ export function createInputSystem(context: Context) {
       filter((coord) => coord.x >= 0 && coord.y >= 0 && coord.x < tilemap.width && coord.y < tilemap.height) // Filter clicks outside the map
     )
     .subscribe((coord) => {
-      if (exists([HasValue(OwnedBy, { value: signer.address })]) == undefined) {
+      if (exists([HasValue(OwnedBy, { value: personaId })]) == undefined) {
         // If not spawned, spawn
         console.log("Spawning at", coord);
         spawn(coord);
@@ -50,7 +50,7 @@ export function createInputSystem(context: Context) {
         if (selectedEntity != undefined) removeComponent(Selected, selectedEntity);
 
         // Add the Selected component to the entity below the cursor
-        const entityAtPos = exists([HasValue(Position, coord), HasValue(OwnedBy, { value: signer.address })]);
+        const entityAtPos = exists([HasValue(Position, coord), HasValue(OwnedBy, { value: personaId })]);
         if (entityAtPos) {
           console.log("Selected entity", entityAtPos, "at", coord);
           setComponent(Selected, entityAtPos, {});
