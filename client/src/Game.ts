@@ -1,4 +1,4 @@
-import { createWorld } from "@latticexyz/mobx-ecs";
+import { createWorld, Entity } from "@latticexyz/mobx-ecs";
 import { createMapping, loadEvents, setupContracts, setupMappings } from "../packages/lattice-eth-middleware";
 import { setupPhaser } from "@latticexyz/phaser-middleware";
 import {
@@ -88,6 +88,10 @@ export async function createGame(contractAddress: string, privateKey: string, ch
     txExecutor.sendTx((c) => c.spawn(coord));
   }
 
+  async function action(entity: Entity, target: Coord) {
+    await txExecutor.sendTx((contract) => contract.action(entity, target));
+  }
+
   const context = {
     world,
     phaser,
@@ -96,7 +100,7 @@ export async function createGame(contractAddress: string, privateKey: string, ch
     signer,
     txExecutor,
     personaId,
-    api: { spawn },
+    api: { spawn, action },
   };
 
   /*****************************************

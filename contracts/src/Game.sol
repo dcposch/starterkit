@@ -10,6 +10,7 @@ import { StringComponent } from './components/StringComponent.sol';
 import { AddressComponent } from './components/AddressComponent.sol';
 import { BoolComponent } from './components/BoolComponent.sol';
 import { TupleComponent } from './components/TupleComponent.sol';
+import { manhattan } from './utils.sol';
 
 struct Components {
   CoordComponent position;
@@ -40,6 +41,15 @@ contract Game {
 
   modifier onlyContractOwner() {
     require(msg.sender == owner, 'only contract owner');
+    _;
+  }
+  modifier onlyEntityOwner(uint256 entity) {
+    require(c.ownedBy.getValue(entity) == msg.sender, 'invalid owner');
+    _;
+  }
+
+  modifier onlyAdjacent(uint256 entity, Coord memory target) {
+    require(manhattan(c.position.getValue(entity), target) == 1, 'not adjacent');
     _;
   }
 
@@ -123,5 +133,14 @@ contract Game {
         }
       }
     }
+  }
+
+  function action(uint256 entity, Coord memory target) public onlyEntityOwner(entity) onlyAdjacent(entity, target) {
+    // If the  enity can move, move the entity
+    if (c.movable.has(entity)) {
+      return c.position.set(entity, target);
+    }
+
+    revert('Invalid action');
   }
 }
