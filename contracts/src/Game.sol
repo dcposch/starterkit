@@ -7,11 +7,21 @@ import { Component } from 'lattice-ecs/Component.sol';
 import { CoordComponent, Coord } from './components/CoordComponent.sol';
 import { UintComponent } from './components/UintComponent.sol';
 import { StringComponent } from './components/StringComponent.sol';
+import { AddressComponent } from './components/AddressComponent.sol';
+import { BoolComponent } from './components/BoolComponent.sol';
+import { TupleComponent } from './components/TupleComponent.sol';
 
 struct Components {
   CoordComponent position;
   StringComponent texture;
   UintComponent appearance;
+  AddressComponent ownedBy;
+  BoolComponent movable;
+  BoolComponent miner;
+  BoolComponent mined;
+  BoolComponent heart;
+  UintComponent attack;
+  TupleComponent life;
 }
 enum Texture {
   Imp
