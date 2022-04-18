@@ -6,10 +6,15 @@ import { World } from 'lattice-ecs/World.sol';
 import { Component } from 'lattice-ecs/Component.sol';
 import { CoordComponent, Coord } from './components/CoordComponent.sol';
 import { UintComponent } from './components/UintComponent.sol';
+import { StringComponent } from './components/StringComponent.sol';
 
 struct Components {
   CoordComponent position;
-  UintComponent num;
+  StringComponent texture;
+  UintComponent appearance;
+}
+enum Texture {
+  Imp
 }
 
 contract Game {
@@ -33,7 +38,12 @@ contract Game {
   function registerComponents(Components memory _components, address[] memory _componentList) public onlyContractOwner {
     c = _components;
     componentList = _componentList;
-    c.position.set(0, Coord(0, 0));
+    c.position.set(1, Coord(0, 0));
+
+    string memory imp = 'https://imagedelivery.net/kiVB3FlOmd8gwoTJWblSOA/ef4adf50-0e0d-4959-9917-439de7ed9500/public';
+    c.texture.set(uint256(Texture.Imp), imp);
+
+    c.appearance.set(1, uint256(Texture.Imp));
   }
 
   /**
