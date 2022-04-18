@@ -48,12 +48,9 @@ contract Game {
   function registerComponents(Components memory _components, address[] memory _componentList) public onlyContractOwner {
     c = _components;
     componentList = _componentList;
-    c.position.set(1, Coord(0, 0));
 
     string memory imp = 'https://imagedelivery.net/kiVB3FlOmd8gwoTJWblSOA/ef4adf50-0e0d-4959-9917-439de7ed9500/public';
     c.texture.set(uint256(Texture.Imp), imp);
-
-    c.appearance.set(1, uint256(Texture.Imp));
   }
 
   /**
@@ -63,5 +60,11 @@ contract Game {
     for (uint256 i; i < componentList.length; i++) {
       Component(componentList[i]).remove(entity);
     }
+  }
+
+  function spawn(Coord memory coord) public {
+    uint256 entity = World(world).getNumEntities();
+    c.position.set(entity, coord);
+    c.appearance.set(entity, uint256(Texture.Imp));
   }
 }
