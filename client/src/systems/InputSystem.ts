@@ -7,9 +7,29 @@ export function createInputSystem(context: Context) {
   const {
     components: { OwnedBy, Selected, Position },
     phaser: { input, map: tilemap },
-    api: { spawn },
+    api: { spawn, actionDirection },
     signer,
   } = context;
+
+  input.onKeyPress(
+    (keys) => keys.has("W") || keys.has("UP"),
+    () => actionDirection("Up")
+  );
+
+  input.onKeyPress(
+    (keys) => keys.has("A") || keys.has("LEFT"),
+    () => actionDirection("Left")
+  );
+
+  input.onKeyPress(
+    (keys) => keys.has("S") || keys.has("DOWN"),
+    () => actionDirection("Down")
+  );
+
+  input.onKeyPress(
+    (keys) => keys.has("D") || keys.has("RIGHT"),
+    () => actionDirection("Right")
+  );
 
   input.click$
     .pipe(
